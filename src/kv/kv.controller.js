@@ -40,6 +40,18 @@ export class KVController {
     return await this.kvService.getKeyValue(res, query) // Fetches all users data
   }
 
+  @Get('all') // Handles GET requests to /kv/all
+  @Bind(Res()) // Binds the response object
+  @ApiOperation({ summary: 'Get all key value store data' }) // Describes the endpoint
+  @ApiResponse({
+    status: 200,
+    description: 'Returns the list of all key value pairs.',
+  })
+  @ApiResponse({ status: 500, description: 'Internal Server Error.' })
+  async getAllKeyValue(res) {
+    return await this.kvService.getAllKeyValue(res) // Fetches all users data
+  }
+
   @Post() // Handles POST requests to /kv
   @Bind(Res(), Query(), Body()) // Binds response, query, and body objects
   @ApiOperation({ summary: 'Add key value data' }) // Describes the endpoint
@@ -77,15 +89,15 @@ export class KVController {
     return await this.kvService.deleteKeyValue(res, query) // Handles key value pair deletion logic
   }
 
-  @Get('all') // Handles GET requests to /kv/all
+  @Delete('purge') // Handles DELETE requests to /kv/purge
   @Bind(Res()) // Binds the response object
-  @ApiOperation({ summary: 'Get all key value store data' }) // Describes the endpoint
+  @ApiOperation({ summary: 'Purge all key value data' }) // Describes the endpoint
   @ApiResponse({
     status: 200,
-    description: 'Returns the list of all key value pairs.',
+    description: 'All key value data purged successfully.',
   })
   @ApiResponse({ status: 500, description: 'Internal Server Error.' })
-  async getAllKeyValue(res) {
-    return await this.kvService.getAllKeyValue(res) // Fetches all users data
+  async purgeKeyValue(res) {
+    return await this.kvService.purgeKeyValue(res) // Handles key value pair deletion logic
   }
 }

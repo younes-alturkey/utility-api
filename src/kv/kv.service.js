@@ -1,19 +1,19 @@
-import KVInMemory from '@/lib/kv-inmemory'
+import KVDB from '@/lib/kv-db'
 import { HttpStatus, Injectable } from '@nestjs/common'
 
 @Injectable()
 export class KVService {
-  kvInMemory = null
+  kvDB = null
 
   constructor() {
-    this.kvInMemory = KVInMemory
+    this.kvDB = KVDB
   }
 
   // Method to retrieve all users and send the response
   getKeyValue(res, query) {
     try {
       // Retrieve all users from the in-memory key-value storage
-      const value = this.kvInMemory.get(query.key)
+      const value = this.kvDB.get(query.key)
 
       // Send a successful response with the users data
       return res.status(HttpStatus.OK).json({
@@ -40,6 +40,27 @@ export class KVService {
     }
   }
 
+  getAllKeyValue(res) {
+    try {
+      const allKeyValue = this.kvDB.getAll()
+      return res.status(HttpStatus.OK).json({
+        success: true,
+        status: HttpStatus.OK,
+        data: allKeyValue,
+      })
+    } catch (error) {
+      console.error('Error in getting all key value data: ', error)
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        success: false,
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+        message: 'Something went wrong',
+        raw:
+          error?.toString() || // Raw error message, if available
+          'No raw error message available.', // Fallback message if error details are missing
+      })
+    }
+  }
+
   addKeyValue(res, body) {
     try {
       const keyValue = body
@@ -54,7 +75,7 @@ export class KVService {
           message: 'Key value data is required.',
         })
 
-      this.kvInMemory.add(keyValue.key, keyValue.value)
+      this.kvDB.add(keyValue.key, keyValue.value)
 
       // Send a successful response with the users data
       return res.status(HttpStatus.OK).json({
@@ -83,7 +104,7 @@ export class KVService {
 
   deleteKeyValue(res, query) {
     try {
-      this.kvInMemory.delete(query.key)
+      this.kvDB.delete(query.key)
 
       return res.status(HttpStatus.OK).json({
         success: true,
@@ -110,16 +131,16 @@ export class KVService {
     }
   }
 
-  getAllKeyValue(res) {
+  purgeKeyValue(res) {
     try {
-      const allKeyValue = this.kvInMemory.getAll()
+      this.kvDB.purge()
       return res.status(HttpStatus.OK).json({
         success: true,
         status: HttpStatus.OK,
-        data: allKeyValue,
+        message: 'All key value data purged successfully.',
       })
     } catch (error) {
-      console.error('Error in getting all key value data: ', error)
+      console.error('Error in purging key value data: ', error)
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
         success: false,
         status: HttpStatus.INTERNAL_SERVER_ERROR,
