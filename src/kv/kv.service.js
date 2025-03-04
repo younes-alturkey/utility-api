@@ -61,6 +61,41 @@ export class KVService {
     }
   }
 
+  addAllKeyValue(res, body) {
+    try {
+      const keyValue = body
+
+      if (
+        !keyValue ||
+        (typeof keyValue === 'object' &&
+          !Array.isArray(keyValue) &&
+          Object.keys(keyValue).length === 0) ||
+        (Array.isArray(keyValue) && keyValue.length === 0)
+      )
+        return res.status(HttpStatus.BAD_REQUEST).json({
+          success: false,
+          status: HttpStatus.BAD_REQUEST,
+          message: 'Key value data is required.',
+        })
+
+      this.kvDB.addAll(keyValue)
+
+      return res.status(HttpStatus.OK).json({
+        success: true,
+        status: HttpStatus.OK,
+        message: 'Key value data added successfully.',
+      })
+    } catch (error) {
+      console.error('Error in adding all key value data: ', error)
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        success: false,
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+        message: 'Something went wrong',
+        raw: error?.toString() || 'No raw error message available.',
+      })
+    }
+  }
+
   addKeyValue(res, body) {
     try {
       const keyValue = body

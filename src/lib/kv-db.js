@@ -31,6 +31,18 @@ const KVDB = {
       }))
   },
 
+  addAll(entries) {
+    if (Array.isArray(entries)) {
+      for (const { key, value } of entries) {
+        this.add(key, value)
+      }
+    } else if (entries && typeof entries === 'object') {
+      for (const [key, value] of Object.entries(entries)) {
+        this.add(key, value)
+      }
+    }
+  },
+
   add(key, value) {
     db.prepare('INSERT OR REPLACE INTO kv (key, value) VALUES (?, ?)').run(
       key,

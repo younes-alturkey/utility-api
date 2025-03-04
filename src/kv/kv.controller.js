@@ -52,6 +52,20 @@ export class KVController {
     return await this.kvService.getAllKeyValue(res) // Fetches all users data
   }
 
+  @Post('all') // Handles POST requests to /kv/all
+  @Bind(Res(), Body()) // Binds response and body objects
+  @ApiOperation({ summary: 'Add multiple key value data' }) // Describes the endpoint
+  @ApiBody({ description: 'Key value data', required: true }) // Describes body parameters
+  @ApiResponse({
+    status: 200,
+    description: 'Key value data added successfully.',
+  })
+  @ApiResponse({ status: 400, description: 'Bad Request.' })
+  @ApiResponse({ status: 500, description: 'Internal Server Error.' })
+  async addAllKeyValue(res, body) {
+    return await this.kvService.addAllKeyValue(res, body) // Handles key value pair registration logic
+  }
+
   @Post() // Handles POST requests to /kv
   @Bind(Res(), Query(), Body()) // Binds response, query, and body objects
   @ApiOperation({ summary: 'Add key value data' }) // Describes the endpoint
