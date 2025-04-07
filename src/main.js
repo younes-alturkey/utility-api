@@ -1,11 +1,15 @@
 import { AppModule } from '@/app.module'
 import { NestFactory } from '@nestjs/core'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
+import * as bodyParser from 'body-parser'
 
 // Main function to bootstrap and start the application
 async function bootstrap() {
   // Create an instance of the NestJS application using the AppModule
   const app = await NestFactory.create(AppModule)
+
+  app.use(bodyParser.json({ limit: '100mb' }))
+  app.use(bodyParser.urlencoded({ limit: '100mb', extended: true }))
 
   app.setGlobalPrefix('api') // Add '/api' to all routes
 
