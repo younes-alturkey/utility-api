@@ -27,7 +27,7 @@ export class UtilityService {
         response.headers.get('content-type') || 'application/octet-stream'
       const contentDisposition =
         response.headers.get('content-disposition') ||
-        'attachment; filename="downloaded-file"'
+        `attachment; filename="${query?.filename || 'downloaded-file'}"`
 
       res.setHeader('Content-Type', contentType)
       res.setHeader('Content-Disposition', contentDisposition)
