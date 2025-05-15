@@ -24,11 +24,14 @@ export class UtilityService {
       }
 
       const contentType =
-        response.headers.get('content-type') || 'application/octet-stream'
+        response.headers.get('content-type') ||
+        query?.type ||
+        'application/octet-stream'
       const contentDisposition =
         response.headers.get('content-disposition') ||
         `attachment; filename="${query?.filename || 'downloaded-file'}"`
 
+      res.setHeader('Access-Control-Allow-Origin', '*')
       res.setHeader('Content-Type', contentType)
       res.setHeader('Content-Disposition', contentDisposition)
 
