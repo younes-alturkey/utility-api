@@ -23,26 +23,10 @@ async function bootstrap() {
 
   // Enable Cross-Origin Resource Sharing (CORS) to allow requests from different origins
   // This is useful for frontend-backend communication, especially in development environments
-  app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', '*')
-    res.header(
-      'Access-Control-Allow-Methods',
-      'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-    )
-    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization')
-
-    if (req.method === 'OPTIONS') {
-      return res.sendStatus(204)
-    }
-
-    next()
-  })
-
-  // Enable Cross-Origin Resource Sharing (CORS) to allow requests from different origins
-  // This is useful for frontend-backend communication, especially in development environments
   app.enableCors({
     origin: '*', // Allows requests from any origin (not recommended for production)
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS', // Specifies allowed HTTP methods
+    methods: '*', // Allows all HTTP methods
+    allowedHeaders: '*', // Allows all headers
     credentials: true, // Enables the use of credentials like cookies, authorization headers, etc.
   })
 
