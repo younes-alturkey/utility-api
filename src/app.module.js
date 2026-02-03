@@ -1,6 +1,7 @@
 import { AppController } from '@/app.controller'
 import { KVController } from '@/kv/kv.controller'
 import { KVService } from '@/kv/kv.service'
+import { MockController } from '@/mock/mock.controller'
 import { ProxyController } from '@/proxy/proxy.controller'
 import { ProxyService } from '@/proxy/proxy.service'
 import { UtilityController } from '@/utility/utility.controller'
@@ -10,7 +11,7 @@ import { Module } from '@nestjs/common'
 // Defines the main application module
 @Module({
   imports: [], // Import other modules if needed
-  controllers: [AppController, KVController, ProxyController, UtilityController], // Register controllers for handling incoming requests
+  controllers: [AppController, KVController, MockController, ProxyController, UtilityController], // Register controllers for handling incoming requests
   providers: [KVService, ProxyService, UtilityService], // Register services for handling business logic and dependency injection
 })
 export class AppModule {}
