@@ -71,14 +71,9 @@ export class KVController {
   @ApiOperation({ summary: 'Add key value data' }) // Describes the endpoint
   @ApiBody({ description: 'Key value data', required: true }) // Describes body parameters
   @ApiQuery({
-    key: 'key',
-    description: 'Key for the key value pair',
-    required: true,
-  }) // Describes query parameters
-  @ApiQuery({
     name: 'merge',
     description:
-      'If true, shallow-merge the JSON body into the existing stored object (new keys added; overlapping keys overwritten by the body).',
+      'If true, shallow-merge the body value into the existing stored object instead of overwriting it.',
     required: false,
   })
   @ApiResponse({

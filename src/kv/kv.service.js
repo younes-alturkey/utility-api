@@ -96,79 +96,48 @@ export class KVService {
     }
   }
 
-  isMergeEnabled(mergeParam) {
-    return (
-      mergeParam === true ||
-      mergeParam === 'true' ||
-      mergeParam === '1'
-    )
-  }
-
   addKeyValue(res, body, query = {}) {
     try {
-      const key = query.key
-      if (!key || typeof key !== 'string') {
-        return res.status(HttpStatus.BAD_REQUEST).json({
-          success: false,
-          status: HttpStatus.BAD_REQUEST,
-          message: 'Query parameter "key" is required.',
-        })
-      }
-
-      const merge = this.isMergeEnabled(query.merge)
-
-      if (body === undefined || body === null) {
-        return res.status(HttpStatus.BAD_REQUEST).json({
-          success: false,
-          status: HttpStatus.BAD_REQUEST,
-          message: 'Key value data is required.',
-        })
-      }
+      const keyValue = body
 
       if (
-        merge &&
-        (typeof body !== 'object' || body === null || Array.isArray(body))
-      ) {
-        return res.status(HttpStatus.BAD_REQUEST).json({
-          success: false,
-          status: HttpStatus.BAD_REQUEST,
-          message: 'When merge=true, the body must be a JSON object.',
-        })
-      }
-
-      const isEmptyPlainObject =
-        typeof body === 'object' &&
-        body !== null &&
-        !Array.isArray(body) &&
-        Object.keys(body).length === 0
-
-      if (!merge && isEmptyPlainObject) {
+        !keyValue ||
+        (typeof keyValue === 'object' && Object.keys(keyValue).length === 0)
+      )
         return res.status(HttpStatus.BAD_REQUEST).json({
           success: false,
           status: HttpStatus.BAD_REQUEST,
           message: 'Key value data is required.',
         })
-      }
 
-      let valueToStore = body
-      if (merge) {
-        const existing = this.kvDB.get(key)
+      const merge =
+        query.merge === true || query.merge === 'true' || query.merge === '1'
+
+      let valueToStore = keyValue.value
+      if (
+        merge &&
+        valueToStore &&
+        typeof valueToStore === 'object' &&
+        !Array.isArray(valueToStore)
+      ) {
+        const existing = this.kvDB.get(keyValue.key)
         if (
-          existing !== null &&
+          existing &&
           typeof existing === 'object' &&
           !Array.isArray(existing)
         ) {
-          valueToStore = { ...existing, ...body }
+          valueToStore = { ...existing, ...valueToStore }
         }
       }
 
-      this.kvDB.add(key, valueToStore)
+      this.kvDB.add(keyValue.key, valueToStore)
 
+      // Send a successful response with the users data
       return res.status(HttpStatus.OK).json({
-        success: true,
-        status: HttpStatus.OK,
+        success: true, // Indicate the operation was successful
+        status: HttpStatus.OK, // HTTP status code for success (200)
         data: {
-          key,
+          key: keyValue.key,
           value: valueToStore,
         },
       })
